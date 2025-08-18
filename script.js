@@ -1,15 +1,15 @@
 // Funcionalidades interactivas para la página de inicio
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Añadir efecto de escritura al título
-    const title = document.querySelector('header h1');
-    const originalText = title.innerHTML;
-    title.innerHTML = '';
+    // Añadir efecto de escritura solo al texto del título (no al icono)
+    const titleText = document.querySelector('.title-text');
+    const originalText = titleText.textContent;
+    titleText.textContent = '';
     
     let i = 0;
     const typeWriter = () => {
         if (i < originalText.length) {
-            title.innerHTML += originalText.charAt(i);
+            titleText.textContent += originalText.charAt(i);
             i++;
             setTimeout(typeWriter, 100);
         }
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     linkCards.forEach(card => {
         card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-8px) scale(1.02)';
+            this.style.transform = 'translateY(-3px) scale(1.02)';
         });
         
         card.addEventListener('mouseleave', function() {
@@ -96,7 +96,7 @@ function createParticles() {
     particlesContainer.className = 'particles';
     document.body.appendChild(particlesContainer);
     
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 30; i++) {
         const particle = document.createElement('div');
         particle.className = 'particle';
         particle.style.left = Math.random() * 100 + '%';
@@ -110,53 +110,65 @@ function createParticles() {
 const additionalStyles = `
     .search-box {
         text-align: center;
-        margin: 20px 0 30px 0;
+        margin: 15px 0 20px 0;
         display: flex;
         justify-content: center;
         gap: 10px;
     }
     
     .search-box input {
-        padding: 12px 20px;
+        padding: 10px 18px;
         border: none;
         border-radius: 25px;
-        width: 300px;
-        font-size: 16px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        width: 280px;
+        font-size: 14px;
+        background: rgba(255,255,255,0.1);
+        color: #e0e0e0;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         outline: none;
+        border: 1px solid rgba(255,255,255,0.2);
+        backdrop-filter: blur(10px);
+    }
+    
+    .search-box input::placeholder {
+        color: rgba(255,255,255,0.6);
     }
     
     .search-box button {
-        padding: 12px 20px;
+        padding: 10px 18px;
         border: none;
         border-radius: 25px;
-        background: linear-gradient(45deg, #667eea, #764ba2);
+        background: linear-gradient(45deg, #00d4ff, #0099cc);
         color: white;
         cursor: pointer;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 15px rgba(0,212,255,0.3);
+        border: 1px solid rgba(0,212,255,0.3);
     }
     
     .search-box button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        box-shadow: 0 6px 20px rgba(0,212,255,0.4);
+        background: linear-gradient(45deg, #00e6ff, #00b3e6);
     }
     
     .clock {
         position: absolute;
-        top: 20px;
-        right: 20px;
-        background: rgba(255,255,255,0.2);
-        padding: 10px 20px;
-        border-radius: 25px;
-        color: white;
-        font-size: 1.1rem;
+        top: 15px;
+        right: 15px;
+        background: rgba(0,212,255,0.1);
+        padding: 8px 16px;
+        border-radius: 20px;
+        color: #00d4ff;
+        font-size: 0.9rem;
         backdrop-filter: blur(10px);
+        border: 1px solid rgba(0,212,255,0.3);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
     
     .clock i {
-        margin-right: 8px;
-        color: #ffd700;
+        margin-right: 6px;
+        color: #00d4ff;
     }
     
     .particles {
@@ -171,9 +183,9 @@ const additionalStyles = `
     
     .particle {
         position: absolute;
-        width: 4px;
-        height: 4px;
-        background: rgba(255,255,255,0.3);
+        width: 3px;
+        height: 3px;
+        background: rgba(0,212,255,0.4);
         border-radius: 50%;
         animation: float linear infinite;
     }
@@ -202,8 +214,23 @@ const additionalStyles = `
         
         .clock {
             position: static;
-            margin-top: 20px;
+            margin-top: 15px;
             display: inline-block;
+        }
+    }
+    
+    @media (max-height: 800px) {
+        .search-box {
+            margin: 10px 0 15px 0;
+        }
+        
+        .search-box input {
+            padding: 8px 15px;
+            font-size: 13px;
+        }
+        
+        .search-box button {
+            padding: 8px 15px;
         }
     }
 `;
