@@ -1,29 +1,12 @@
 // Funcionalidades interactivas para la página de inicio
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Añadir efecto de escritura solo al texto del título (no al icono)
-    const titleText = document.querySelector('.title-text');
-    const originalText = titleText.textContent;
-    titleText.textContent = '';
-    
-    let i = 0;
-    const typeWriter = () => {
-        if (i < originalText.length) {
-            titleText.textContent += originalText.charAt(i);
-            i++;
-            setTimeout(typeWriter, 100);
-        }
-    };
-    
-    // Iniciar la animación después de un pequeño delay
-    setTimeout(typeWriter, 500);
-
     // Añadir efecto de hover mejorado a las tarjetas
     const linkCards = document.querySelectorAll('.link-card');
     
     linkCards.forEach(card => {
         card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-3px) scale(1.02)';
+            this.style.transform = 'translateY(-2px) scale(1.02)';
         });
         
         card.addEventListener('mouseleave', function() {
@@ -47,8 +30,8 @@ document.addEventListener('DOMContentLoaded', function() {
         <button id="search-btn"><i class="fas fa-search"></i></button>
     `;
     
-    // Insertar después del header
-    document.querySelector('header').after(searchBox);
+    // Insertar al principio del main
+    document.querySelector('main').insertBefore(searchBox, document.querySelector('main').firstChild);
     
     // Funcionalidad de búsqueda
     document.getElementById('search-btn').addEventListener('click', performSearch);
@@ -71,8 +54,8 @@ document.addEventListener('DOMContentLoaded', function() {
     clock.className = 'clock';
     clock.innerHTML = '<i class="fas fa-clock"></i> <span id="time"></span>';
     
-    // Insertar en el header
-    document.querySelector('header').appendChild(clock);
+    // Insertar en el body como primer elemento
+    document.body.insertBefore(clock, document.body.firstChild);
     
     function updateClock() {
         const now = new Date();
@@ -96,7 +79,7 @@ function createParticles() {
     particlesContainer.className = 'particles';
     document.body.appendChild(particlesContainer);
     
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 20; i++) {
         const particle = document.createElement('div');
         particle.className = 'particle';
         particle.style.left = Math.random() * 100 + '%';
@@ -110,21 +93,21 @@ function createParticles() {
 const additionalStyles = `
     .search-box {
         text-align: center;
-        margin: 15px 0 20px 0;
+        margin: 0 0 15px 0;
         display: flex;
         justify-content: center;
         gap: 10px;
     }
     
     .search-box input {
-        padding: 10px 18px;
+        padding: 8px 15px;
         border: none;
-        border-radius: 25px;
-        width: 280px;
-        font-size: 14px;
+        border-radius: 20px;
+        width: 250px;
+        font-size: 13px;
         background: rgba(255,255,255,0.1);
         color: #e0e0e0;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        box-shadow: 0 3px 10px rgba(0,0,0,0.3);
         outline: none;
         border: 1px solid rgba(255,255,255,0.2);
         backdrop-filter: blur(10px);
@@ -135,39 +118,40 @@ const additionalStyles = `
     }
     
     .search-box button {
-        padding: 10px 18px;
+        padding: 8px 15px;
         border: none;
-        border-radius: 25px;
+        border-radius: 20px;
         background: linear-gradient(45deg, #00d4ff, #0099cc);
         color: white;
         cursor: pointer;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(0,212,255,0.3);
+        box-shadow: 0 3px 10px rgba(0,212,255,0.3);
         border: 1px solid rgba(0,212,255,0.3);
     }
     
     .search-box button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0,212,255,0.4);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(0,212,255,0.4);
         background: linear-gradient(45deg, #00e6ff, #00b3e6);
     }
     
     .clock {
-        position: absolute;
-        top: 15px;
-        right: 15px;
+        position: fixed;
+        top: 10px;
+        right: 10px;
         background: rgba(0,212,255,0.1);
-        padding: 8px 16px;
-        border-radius: 20px;
+        padding: 6px 12px;
+        border-radius: 15px;
         color: #00d4ff;
-        font-size: 0.9rem;
+        font-size: 0.8rem;
         backdrop-filter: blur(10px);
         border: 1px solid rgba(0,212,255,0.3);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+        z-index: 1000;
     }
     
     .clock i {
-        margin-right: 6px;
+        margin-right: 5px;
         color: #00d4ff;
     }
     
@@ -183,9 +167,9 @@ const additionalStyles = `
     
     .particle {
         position: absolute;
-        width: 3px;
-        height: 3px;
-        background: rgba(0,212,255,0.4);
+        width: 2px;
+        height: 2px;
+        background: rgba(0,212,255,0.3);
         border-radius: 50%;
         animation: float linear infinite;
     }
@@ -209,28 +193,35 @@ const additionalStyles = `
     
     @media (max-width: 768px) {
         .search-box input {
-            width: 200px;
+            width: 180px;
         }
         
         .clock {
             position: static;
-            margin-top: 15px;
+            margin: 10px auto;
             display: inline-block;
+            width: fit-content;
         }
     }
     
-    @media (max-height: 800px) {
+    @media (max-height: 720px) {
         .search-box {
-            margin: 10px 0 15px 0;
+            margin: 0 0 10px 0;
         }
         
         .search-box input {
-            padding: 8px 15px;
-            font-size: 13px;
+            padding: 6px 12px;
+            font-size: 12px;
+            width: 200px;
         }
         
         .search-box button {
-            padding: 8px 15px;
+            padding: 6px 12px;
+        }
+        
+        .clock {
+            font-size: 0.7rem;
+            padding: 4px 10px;
         }
     }
 `;
