@@ -55,8 +55,11 @@ class StartPage {
         const searchBox = document.createElement('div');
         searchBox.className = 'search-box';
         searchBox.innerHTML = `
-            <input type="text" placeholder="${this.config.settings.searchPlaceholder}" id="search-input">
-            <button id="search-btn"><i class="fas fa-search"></i></button>
+            <div class="search-container">
+                <input type="text" placeholder="${this.config.settings.searchPlaceholder}" id="search-input">
+                <button id="search-btn"><i class="fas fa-search"></i></button>
+                <div class="autocomplete-dropdown" id="autocomplete-dropdown"></div>
+            </div>
         `;
         
         this.mainContent.insertBefore(searchBox, this.mainContent.firstChild);
@@ -108,30 +111,165 @@ class StartPage {
     initSearch(searchBox) {
         const searchInput = searchBox.querySelector('#search-input');
         const searchBtn = searchBox.querySelector('#search-btn');
+        const autocompleteDropdown = searchBox.querySelector('#autocomplete-dropdown');
         
         // Foco automático al cargar la página
         searchInput.focus();
         
-        const performSearch = () => {
-            const query = searchInput.value.trim();
-            if (query) {
+        // Variables para el autocompletado
+        let autocompleteTimeout;
+        let currentSuggestions = [];
+        let selectedIndex = -1;
+        
+        const performSearch = (query = null) => {
+            const searchQuery = query || searchInput.value.trim();
+            if (searchQuery) {
                 // Detectar si es una URL
-                if (this.isValidUrl(query)) {
+                if (this.isValidUrl(searchQuery)) {
                     // Si es una URL válida, navegar directamente
-                    window.location.href = this.normalizeUrl(query);
+                    window.location.href = this.normalizeUrl(searchQuery);
                 } else {
                     // Si no es URL, buscar en Google en la misma pestaña
-                    const searchUrl = `${this.config.settings.searchEngine}${encodeURIComponent(query)}`;
+                    const searchUrl = `${this.config.settings.searchEngine}${encodeURIComponent(searchQuery)}`;
                     window.location.href = searchUrl;
                 }
             }
         };
         
-        searchBtn.addEventListener('click', performSearch);
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
+        // Función para obtener sugerencias de Google
+        const getAutocompleteSuggestions = async (query) => {
+            if (query.length < 2) {
+                hideAutocomplete();
+                return;
+            }
+            
+            try {
+                // Usar la API de sugerencias de Google
+                const response = await fetch(`https://suggestqueries.google.com/complete/search?client=firefox&q=${encodeURIComponent(query)}`);
+                const data = await response.json();
+                
+                if (data[1] && data[1].length > 0) {
+                    currentSuggestions = data[1];
+                    showAutocomplete(currentSuggestions);
+                } else {
+                    hideAutocomplete();
+                }
+            } catch (error) {
+                console.log('No se pudieron obtener sugerencias:', error);
+                hideAutocomplete();
+            }
+        };
+        
+        // Función para mostrar el autocompletado
+        const showAutocomplete = (suggestions) => {
+            autocompleteDropdown.innerHTML = suggestions.map((suggestion, index) => 
+                `<div class="autocomplete-item" data-index="${index}">${suggestion}</div>`
+            ).join('');
+            autocompleteDropdown.style.display = 'block';
+            selectedIndex = -1;
+        };
+        
+        // Función para ocultar el autocompletado
+        const hideAutocomplete = () => {
+            autocompleteDropdown.style.display = 'none';
+            currentSuggestions = [];
+            selectedIndex = -1;
+        };
+        
+        // Función para seleccionar elemento del autocompletado
+        const selectAutocompleteItem = (index) => {
+            if (index >= 0 && index < currentSuggestions.length) {
+                searchInput.value = currentSuggestions[index];
+                hideAutocomplete();
+                searchInput.focus();
+            }
+        };
+        
+        // Event listeners para el input
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.trim();
+            
+            // Limpiar timeout anterior
+            clearTimeout(autocompleteTimeout);
+            
+            // Ocultar autocompletado si no hay texto
+            if (query.length < 2) {
+                hideAutocomplete();
+                return;
+            }
+            
+            // Debounce para evitar muchas peticiones
+            autocompleteTimeout = setTimeout(() => {
+                getAutocompleteSuggestions(query);
+            }, 300);
+        });
+        
+        // Event listeners para el teclado
+        searchInput.addEventListener('keydown', (e) => {
+            if (autocompleteDropdown.style.display === 'block') {
+                switch (e.key) {
+                    case 'ArrowDown':
+                        e.preventDefault();
+                        selectedIndex = Math.min(selectedIndex + 1, currentSuggestions.length - 1);
+                        updateAutocompleteSelection();
+                        break;
+                    case 'ArrowUp':
+                        e.preventDefault();
+                        selectedIndex = Math.max(selectedIndex - 1, -1);
+                        updateAutocompleteSelection();
+                        break;
+                    case 'Enter':
+                        e.preventDefault();
+                        if (selectedIndex >= 0) {
+                            selectAutocompleteItem(selectedIndex);
+                        } else {
+                            performSearch();
+                        }
+                        break;
+                    case 'Escape':
+                        hideAutocomplete();
+                        searchInput.focus();
+                        break;
+                }
+            } else if (e.key === 'Enter') {
                 performSearch();
             }
+        });
+        
+        // Función para actualizar la selección visual
+        const updateAutocompleteSelection = () => {
+            const items = autocompleteDropdown.querySelectorAll('.autocomplete-item');
+            items.forEach((item, index) => {
+                item.classList.toggle('selected', index === selectedIndex);
+            });
+        };
+        
+        // Event listeners para el botón
+        searchBtn.addEventListener('click', () => performSearch());
+        
+        // Event listeners para el autocompletado
+        autocompleteDropdown.addEventListener('click', (e) => {
+            if (e.target.classList.contains('autocomplete-item')) {
+                const index = parseInt(e.target.dataset.index);
+                selectAutocompleteItem(index);
+            }
+        });
+        
+        // Ocultar autocompletado al hacer clic fuera
+        document.addEventListener('click', (e) => {
+            if (!searchBox.contains(e.target)) {
+                hideAutocomplete();
+            }
+        });
+        
+        // Ocultar autocompletado al perder el foco del input
+        searchInput.addEventListener('blur', () => {
+            // Pequeño delay para permitir clics en las sugerencias
+            setTimeout(() => {
+                if (!autocompleteDropdown.contains(document.activeElement)) {
+                    hideAutocomplete();
+                }
+            }, 150);
         });
     }
 
@@ -244,6 +382,13 @@ const additionalStyles = `
         gap: 10px;
     }
     
+    .search-container {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+    
     .search-box input {
         padding: 8px 15px;
         border: none;
@@ -278,6 +423,64 @@ const additionalStyles = `
         transform: translateY(-1px);
         box-shadow: 0 4px 15px rgba(0,212,255,0.4);
         background: linear-gradient(45deg, #00e6ff, #00b3e6);
+    }
+    
+    .autocomplete-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(30, 30, 30, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        margin-top: 5px;
+        max-height: 200px;
+        overflow-y: auto;
+        backdrop-filter: blur(15px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        display: none;
+    }
+    
+    .autocomplete-item {
+        padding: 10px 15px;
+        cursor: pointer;
+        color: #e0e0e0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.2s ease;
+        font-size: 13px;
+    }
+    
+    .autocomplete-item:last-child {
+        border-bottom: none;
+    }
+    
+    .autocomplete-item:hover {
+        background: rgba(0, 212, 255, 0.1);
+        color: #00d4ff;
+    }
+    
+    .autocomplete-item.selected {
+        background: rgba(0, 212, 255, 0.2);
+        color: #00d4ff;
+    }
+    
+    .autocomplete-dropdown::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .autocomplete-dropdown::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 3px;
+    }
+    
+    .autocomplete-dropdown::-webkit-scrollbar-thumb {
+        background: rgba(0, 212, 255, 0.5);
+        border-radius: 3px;
+    }
+    
+    .autocomplete-dropdown::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 212, 255, 0.7);
     }
     
     .clock {
@@ -360,6 +563,12 @@ const additionalStyles = `
     @media (max-width: 768px) {
         .search-box input {
             width: 180px;
+        }
+        
+        .autocomplete-dropdown {
+            left: 0;
+            right: 0;
+            width: 100%;
         }
         
         .clock {
