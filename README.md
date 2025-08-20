@@ -1,22 +1,115 @@
-# 🏠 Mi Página de Inicio Personalizada
+# 🏠 Mi Página de Inicio JAMstack
 
-Una página de inicio moderna y atractiva para tu navegador con acceso rápido a tus sitios favoritos.
+Una página de inicio moderna y atractiva para tu navegador con arquitectura JAMstack. Ahora puedes gestionar fácilmente todos tus enlaces favoritos desde un archivo de configuración JSON y generar páginas estáticas completamente funcionales.
 
 ## ✨ Características
 
-- 🎨 **Diseño moderno** con gradientes y efectos visuales
+- 🎨 **Diseño moderno** con tema oscuro y efectos visuales
 - 🔗 **Enlaces organizados** por categorías (Noticias, Redes Sociales, Streaming)
 - 🔍 **Barra de búsqueda** integrada con Google
 - ⏰ **Reloj en tiempo real** 
 - 📱 **Diseño responsive** para todos los dispositivos
-- ✨ **Animaciones suaves** y efectos hover
+- ✨ **Efectos hover** en las tarjetas
 - 🎭 **Partículas animadas** de fondo
+- 🚀 **Arquitectura JAMstack** para fácil gestión
+- 🔨 **Build estático** - HTML completamente pre-renderizado
+
+## 🏗️ Arquitectura JAMstack
+
+### 📁 Estructura de Archivos
+
+```
+start-page/
+├── index.html          # Template HTML (estructura básica)
+├── config.json         # Configuración de sitios y ajustes
+├── styles.css          # Estilos CSS
+├── build.js            # Script de build para generar HTML estático
+├── package.json        # Dependencias y scripts de Node.js
+├── .gitignore          # Archivos a excluir del repositorio
+├── dist/               # Directorio de salida (generado automáticamente)
+│   ├── index.html      # HTML estático final
+│   └── config.json     # Configuración copiada
+└── README.md           # Este archivo
+```
+
+### 🔧 Archivo de Configuración
+
+El archivo `config.json` contiene toda la configuración de tu página:
+
+```json
+{
+  "categories": [
+    {
+      "id": "news",
+      "title": "Noticias",
+      "icon": "fas fa-newspaper",
+      "sites": [
+        {
+          "name": "El País",
+          "url": "https://www.elpais.com",
+          "icon": "fas fa-newspaper",
+          "color": "#00d4ff"
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "title": "Nueva pestaña",
+    "searchEngine": "https://www.google.com/search?q=",
+    "particles": true
+  }
+}
+```
+
+## 🚀 Flujo de Trabajo
+
+### 1. **Desarrollo** (Archivos fuente)
+- Edita `config.json` para añadir/quitar sitios
+- Modifica `styles.css` para cambiar estilos
+- Ajusta `index.html` si necesitas cambiar la estructura
+
+### 2. **Build** (Generación estática)
+- Ejecuta `npm run build` para generar HTML estático
+- Se crea el directorio `dist/` con la página final
+- Todo el JavaScript y CSS se incluye inline
+
+### 3. **Despliegue** (Página estática)
+- El directorio `dist/` contiene solo archivos estáticos
+- Puedes subirlo a cualquier hosting estático
+- No necesita servidor ni Node.js en producción
+
+## 🔨 Comandos de Build
+
+### Instalación
+```bash
+npm install
+```
+
+### Build de producción
+```bash
+npm run build
+```
+
+### Desarrollo con auto-reload
+```bash
+npm run dev
+```
+
+### Watch mode (auto-build al cambiar archivos)
+```bash
+npm run watch
+```
+
+### Limpiar archivos de build
+```bash
+npm run clean
+```
 
 ## 🌐 Enlaces Incluidos
 
-### 📰 El Mundo
-- **El Mundo** - Noticias nacionales e internacionales
+### 📰 Noticias
 - **El País** - Periódico de referencia
+- **El Mundo** - Noticias nacionales e internacionales
 - **ABC** - Diario español
 
 ### 📱 Redes Sociales
@@ -29,68 +122,90 @@ Una página de inicio moderna y atractiva para tu navegador con acceso rápido a
 
 ## 🚀 Cómo Usar
 
-### 1. Configurar como Página de Inicio
+### 1. **Configurar como Página de Inicio**
 
 #### Chrome/Edge:
-1. Abre `index.html` en tu navegador
-2. Ve a Configuración → Al abrir Chrome → Establecer páginas
-3. Añade la ruta completa a `index.html`
+1. Ejecuta `npm run build`
+2. Abre `dist/index.html` en tu navegador
+3. Ve a Configuración → Al abrir Chrome → Establecer páginas
+4. Añade la ruta completa a `dist/index.html`
 
 #### Firefox:
-1. Abre `index.html` en tu navegador
-2. Ve a Opciones → General → Página de inicio
-3. Pega la ruta completa a `index.html`
+1. Ejecuta `npm run build`
+2. Abre `dist/index.html` en tu navegador
+3. Ve a Opciones → General → Página de inicio
+4. Pega la ruta completa a `dist/index.html`
 
-### 2. Usar Localmente
-- Simplemente abre `index.html` en tu navegador
-- Todos los enlaces se abrirán en nuevas pestañas
+### 2. **Usar Localmente**
+- Ejecuta `npm run build`
+- Abre `dist/index.html` en tu navegador
+- Todos los enlaces se abrirán en la misma pestaña
 
 ## 🛠️ Personalización
 
-### Añadir Nuevos Enlaces
-Edita `index.html` y añade nuevas tarjetas en la sección correspondiente:
+### Añadir Nuevos Sitios
 
-```html
-<a href="TU_URL" class="link-card" target="_blank">
-    <i class="fas fa-icono"></i>
-    <span>Nombre del Sitio</span>
-</a>
+Para añadir un nuevo sitio, edita `config.json`:
+
+```json
+{
+  "name": "Netflix",
+  "url": "https://www.netflix.com",
+  "icon": "fas fa-film",
+  "color": "#e50914"
+}
 ```
 
+### Añadir Nuevas Categorías
+
+```json
+{
+  "id": "nueva-categoria",
+  "title": "Nueva Categoría",
+  "icon": "fas fa-icono",
+  "color": "#00d4ff",
+  "sites": [
+    // Lista de sitios...
+  ]
+}
+```
+
+### Cambiar Configuración
+
+En la sección `settings` puedes modificar:
+
+- **title**: Título de la página
+- **searchEngine**: Motor de búsqueda
+- **searchPlaceholder**: Texto del placeholder de búsqueda
+- **particles**: Habilitar/deshabilitar partículas
+- **particleCount**: Número de partículas
+
 ### Cambiar Colores
+
 Edita `styles.css` para personalizar:
 - Colores de fondo
 - Colores de las tarjetas
 - Colores específicos de cada plataforma
 
-### Modificar Funcionalidades
-Edita `script.js` para:
-- Cambiar el motor de búsqueda
-- Modificar animaciones
-- Añadir nuevas funcionalidades
-
-## 📁 Estructura de Archivos
-
-```
-start-page/
-├── index.html      # Página principal
-├── styles.css      # Estilos CSS
-├── script.js       # Funcionalidades JavaScript
-└── README.md       # Este archivo
-```
-
 ## 🎨 Tecnologías Utilizadas
 
 - **HTML5** - Estructura semántica
 - **CSS3** - Estilos modernos con Flexbox y Grid
-- **JavaScript ES6+** - Funcionalidades interactivas
+- **JavaScript ES6+** - Generación dinámica del contenido
 - **Font Awesome** - Iconos vectoriales
-- **CSS Animations** - Transiciones y keyframes
+- **JAMstack** - Arquitectura moderna y escalable
+- **Node.js** - Sistema de build y herramientas de desarrollo
 
 ## 🔧 Requisitos
 
+### Desarrollo
+- Node.js 14.0.0 o superior
+- npm o yarn
+
+### Producción
 - Navegador web moderno (Chrome 60+, Firefox 55+, Safari 12+)
 - Conexión a internet para cargar iconos y fuentes
+- Cualquier hosting estático (GitHub Pages, Netlify, Vercel, etc.)
 
 ## 📱 Compatibilidad
 
@@ -99,14 +214,48 @@ start-page/
 - ✅ Tablet
 - ✅ Todos los navegadores modernos
 
-## 🚀 Características Avanzadas
+## 🚀 Ventajas de JAMstack + Build
 
-- **Efecto de escritura** en el título
-- **Partículas flotantes** de fondo
-- **Efectos hover** en las tarjetas
-- **Animaciones de entrada** escalonadas
-- **Búsqueda rápida** integrada
-- **Reloj en tiempo real**
+- **Fácil mantenimiento**: Solo edita `config.json` para cambiar enlaces
+- **Escalable**: Añade tantas categorías y sitios como quieras
+- **Rápido**: Página completamente estática, sin JavaScript de carga
+- **Portable**: Funciona en cualquier hosting estático
+- **Versionable**: Control de versiones con Git
+- **SEO-friendly**: HTML completamente renderizado
+- **Sin dependencias**: No necesita Node.js en producción
+
+## 🔍 Desarrollo Local
+
+### Desarrollo con auto-reload:
+```bash
+npm run dev
+```
+
+### Watch mode para desarrollo:
+```bash
+npm run watch
+```
+
+### Build manual:
+```bash
+npm run build
+```
+
+## 🌐 Despliegue
+
+### GitHub Pages
+1. Sube el directorio `dist/` a tu repositorio
+2. Activa GitHub Pages en la configuración del repositorio
+
+### Netlify
+1. Conecta tu repositorio a Netlify
+2. Configura el directorio de build como `dist/`
+3. Netlify se construirá automáticamente
+
+### Vercel
+1. Conecta tu repositorio a Vercel
+2. Configura el directorio de salida como `dist/`
+3. Vercel detectará automáticamente que es un sitio estático
 
 ## 🤝 Contribuir
 
@@ -122,4 +271,50 @@ Este proyecto es de código abierto y está disponible bajo la licencia MIT.
 
 ---
 
-¡Disfruta de tu nueva página de inicio personalizada! 🎉
+¡Disfruta de tu nueva página de inicio JAMstack completamente estática! 🎉
+
+## 💡 Ejemplos de Uso
+
+### Añadir un nuevo sitio de noticias:
+
+```json
+{
+  "name": "La Vanguardia",
+  "url": "https://www.lavanguardia.com",
+  "icon": "fas fa-newspaper",
+  "color": "#00d4ff"
+}
+```
+
+### Cambiar el motor de búsqueda a Bing:
+
+```json
+{
+  "searchEngine": "https://www.bing.com/search?q=",
+  "searchPlaceholder": "Buscar en Bing..."
+}
+```
+
+### Deshabilitar partículas:
+
+```json
+{
+  "particles": false
+}
+```
+
+### Flujo de trabajo típico:
+
+```bash
+# 1. Editar configuración
+# Edita config.json para añadir/quitar sitios
+
+# 2. Generar build
+npm run build
+
+# 3. Probar localmente
+# Abre dist/index.html en tu navegador
+
+# 4. Desplegar
+# Sube el directorio dist/ a tu hosting
+```

@@ -1,0 +1,79 @@
+{
+  "categories": [
+    {
+      "id": "news",
+      "title": "Noticias",
+      "icon": "fas fa-newspaper",
+      "color": "#00d4ff",
+      "sites": [
+        {
+          "name": "El País",
+          "url": "https://www.elpais.com",
+          "icon": "fas fa-newspaper",
+          "color": "#00d4ff"
+        },
+        {
+          "name": "El Mundo",
+          "url": "https://www.elmundo.es",
+          "icon": "fas fa-newspaper",
+          "color": "#00d4ff"
+        },
+        {
+          "name": "ABC",
+          "url": "https://www.abc.es",
+          "icon": "fas fa-newspaper",
+          "color": "#00d4ff"
+        }
+      ]
+    },
+    {
+      "id": "social",
+      "title": "Redes Sociales",
+      "icon": "fas fa-share-alt",
+      "color": "#00d4ff",
+      "sites": [
+        {
+          "name": "Reddit",
+          "url": "https://www.reddit.com",
+          "icon": "fab fa-reddit",
+          "color": "#ff4500"
+        },
+        {
+          "name": "YouTube",
+          "url": "https://www.youtube.com",
+          "icon": "fab fa-youtube",
+          "color": "#ff0000"
+        }
+      ]
+    },
+    {
+      "id": "streaming",
+      "title": "Streaming",
+      "icon": "fas fa-play-circle",
+      "color": "#00d4ff",
+      "sites": [
+        {
+          "name": "Prime Video",
+          "url": "https://www.primevideo.com",
+          "icon": "fas fa-play",
+          "color": "#00a8e1"
+        },
+        {
+          "name": "Disney+",
+          "url": "https://www.disneyplus.com",
+          "icon": "fas fa-magic",
+          "color": "#113ccf"
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "title": "Nueva pestaña",
+    "searchEngine": "https://www.google.com/search?q=",
+    "searchPlaceholder": "Buscar en Google...",
+    "theme": "dark",
+    "particles": true,
+    "particleCount": 20
+  }
+}
+

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva pestaña</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="dark-theme">
+    <div class="container">
+        <main id="main-content">
+            
+        <h1 class="main-title">Nueva pestaña</h1>
+    
+        <div class="search-container">
+            <form action="https://www.google.com/search?q=" method="get" target="_blank">
+                <input 
+                    type="text" 
+                    name="q" 
+                    placeholder="Buscar en Google..."
+                    class="search-input"
+                    autocomplete="off"
+                >
+                <button type="submit" class="search-button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
+    
+            <section class="category">
+                <h2 class="category-title">
+                    <i class="fas fa-newspaper" style="color: #00d4ff"></i>
+                    Noticias
+                </h2>
+                <div class="sites-grid">
+                    
+                <a href="https://www.elpais.com" class="site-card" target="_blank" rel="noopener">
+                    <i class="fas fa-newspaper" style="color: #00d4ff"></i>
+                    <span>El País</span>
+                </a>
+            
+                <a href="https://www.elmundo.es" class="site-card" target="_blank" rel="noopener">
+                    <i class="fas fa-newspaper" style="color: #00d4ff"></i>
+                    <span>El Mundo</span>
+                </a>
+            
+                <a href="https://www.abc.es" class="site-card" target="_blank" rel="noopener">
+                    <i class="fas fa-newspaper" style="color: #00d4ff"></i>
+                    <span>ABC</span>
+                </a>
+            
+                </div>
+            </section>
+        
+            <section class="category">
+                <h2 class="category-title">
+                    <i class="fas fa-share-alt" style="color: #00d4ff"></i>
+                    Redes Sociales
+                </h2>
+                <div class="sites-grid">
+                    
+                <a href="https://www.reddit.com" class="site-card" target="_blank" rel="noopener">
+                    <i class="fab fa-reddit" style="color: #ff4500"></i>
+                    <span>Reddit</span>
+                </a>
+            
+                <a href="https://www.youtube.com" class="site-card" target="_blank" rel="noopener">
+                    <i class="fab fa-youtube" style="color: #ff0000"></i>
+                    <span>YouTube</span>
+                </a>
+            
+                </div>
+            </section>
+        
+            <section class="category">
+                <h2 class="category-title">
+                    <i class="fas fa-play-circle" style="color: #00d4ff"></i>
+                    Streaming
+                </h2>
+                <div class="sites-grid">
+                    
+                <a href="https://www.primevideo.com" class="site-card" target="_blank" rel="noopener">
+                    <i class="fas fa-play" style="color: #00a8e1"></i>
+                    <span>Prime Video</span>
+                </a>
+            
+                <a href="https://www.disneyplus.com" class="site-card" target="_blank" rel="noopener">
+                    <i class="fas fa-magic" style="color: #113ccf"></i>
+                    <span>Disney+</span>
+                </a>
+            
+                </div>
+            </section>
+        
+        </main>
+
+        <footer>
+            <p>Hecho con ❤️ para tu navegador</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+
+            <script>
+                window.particleConfig = {
+                    count: 20,
+                    enabled: true
+                };
+            </script>
+        </body>
+</html>

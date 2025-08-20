@@ -1,0 +1,31 @@
+{
+  "name": "start-page-jamstack",
+  "version": "1.0.0",
+  "description": "Página de inicio personalizada con arquitectura JAMstack",
+  "main": "build.js",
+  "scripts": {
+    "build": "node build.js",
+    "dev": "node build.js && npx serve dist",
+    "watch": "nodemon --watch config.json --watch index.html --watch styles.css --exec 'npm run build'",
+    "clean": "rimraf dist",
+    "prebuild": "npm run clean",
+    "prepare": "husky"
+  },
+  "keywords": [
+    "start-page",
+    "jamstack",
+    "static-site",
+    "browser-homepage"
+  ],
+  "author": "Tu Nombre",
+  "license": "MIT",
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "nodemon": "^3.0.1",
+    "rimraf": "^5.0.1",
+    "serve": "^14.2.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

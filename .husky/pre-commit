@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔨 Ejecutando build JAMstack antes del commit..."
+npm run build
+
+if [ $? -eq 0 ]; then
+    echo "✅ Build exitoso, continuando con el commit..."
+    git add dist/
+else
+    echo "❌ Build falló, abortando commit..."
+    exit 1
+fi
