@@ -8,7 +8,7 @@
       "sites": [
         {
           "name": "El País",
-          "url": "https://www.elpais.com",
+          "url": "https://elpais.com",
           "icon": "fas fa-newspaper",
           "color": "#00d4ff"
         },

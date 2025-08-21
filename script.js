@@ -129,42 +129,78 @@ class StartPage {
                     // Si es una URL válida, navegar directamente
                     window.location.href = this.normalizeUrl(searchQuery);
                 } else {
-                    // Si no es URL, buscar en Google en la misma pestaña
+                    // Buscar si coincide con algún sitio configurado
+                    const matchingSite = this.findMatchingSite(searchQuery);
+                    if (matchingSite) {
+                        window.location.href = matchingSite.url;
+                        return;
+                    }
+                    
+                    // Si no es URL ni sitio configurado, buscar en Google
                     const searchUrl = `${this.config.settings.searchEngine}${encodeURIComponent(searchQuery)}`;
                     window.location.href = searchUrl;
                 }
             }
         };
         
-        // Función para obtener sugerencias de Google
-        const getAutocompleteSuggestions = async (query) => {
+        // Función para obtener sugerencias locales basadas en la configuración
+        const getAutocompleteSuggestions = (query) => {
             if (query.length < 2) {
                 hideAutocomplete();
                 return;
             }
             
-            try {
-                // Usar la API de sugerencias de Google
-                const response = await fetch(`https://suggestqueries.google.com/complete/search?client=firefox&q=${encodeURIComponent(query)}`);
-                const data = await response.json();
-                
-                if (data[1] && data[1].length > 0) {
-                    currentSuggestions = data[1];
-                    showAutocomplete(currentSuggestions);
-                } else {
-                    hideAutocomplete();
+            const queryLower = query.toLowerCase();
+            const suggestions = [];
+            
+            // Buscar en categorías
+            this.config.categories.forEach(category => {
+                if (category.title.toLowerCase().includes(queryLower)) {
+                    suggestions.push(`${category.title} (categoría)`);
                 }
-            } catch (error) {
-                console.log('No se pudieron obtener sugerencias:', error);
+                
+                // Buscar en sitios de cada categoría
+                category.sites.forEach(site => {
+                    if (site.name.toLowerCase().includes(queryLower)) {
+                        suggestions.push(site.name);
+                    }
+                });
+            });
+            
+            // Añadir sugerencias comunes de búsqueda
+            const commonSuggestions = [
+                'google', 'youtube', 'reddit', 'twitter', 'facebook', 'instagram',
+                'netflix', 'spotify', 'amazon', 'wikipedia', 'maps', 'traductor',
+                'clima', 'tiempo', 'noticias', 'deportes', 'música', 'películas'
+            ];
+            
+            commonSuggestions.forEach(suggestion => {
+                if (suggestion.includes(queryLower) && !suggestions.includes(suggestion)) {
+                    suggestions.push(suggestion);
+                }
+            });
+            
+            // Limitar a 8 sugerencias y eliminar duplicados
+            const uniqueSuggestions = [...new Set(suggestions)].slice(0, 8);
+            
+            if (uniqueSuggestions.length > 0) {
+                currentSuggestions = uniqueSuggestions;
+                showAutocomplete(currentSuggestions);
+            } else {
                 hideAutocomplete();
             }
         };
         
         // Función para mostrar el autocompletado
         const showAutocomplete = (suggestions) => {
-            autocompleteDropdown.innerHTML = suggestions.map((suggestion, index) => 
-                `<div class="autocomplete-item" data-index="${index}">${suggestion}</div>`
-            ).join('');
+            autocompleteDropdown.innerHTML = suggestions.map((suggestion, index) => {
+                const matchingSite = this.findMatchingSite(suggestion);
+                const siteInfo = matchingSite ? ` - ${matchingSite.url}` : '';
+                return `<div class="autocomplete-item" data-index="${index}">
+                    <span class="suggestion-text">${suggestion}</span>
+                    ${siteInfo ? `<span class="site-url">${siteInfo}</span>` : ''}
+                </div>`;
+            }).join('');
             autocompleteDropdown.style.display = 'block';
             selectedIndex = -1;
         };
@@ -197,6 +233,10 @@ class StartPage {
                 hideAutocomplete();
                 return;
             }
+            
+            // Mostrar indicador de carga
+            autocompleteDropdown.innerHTML = '<div class="autocomplete-item loading">Buscando...</div>';
+            autocompleteDropdown.style.display = 'block';
             
             // Debounce para evitar muchas peticiones
             autocompleteTimeout = setTimeout(() => {
@@ -296,6 +336,34 @@ class StartPage {
             }
         }
         return url;
+    }
+
+    // Método para encontrar sitios que coincidan con la búsqueda
+    findMatchingSite(query) {
+        const queryLower = query.toLowerCase().trim();
+        
+        // Limpiar el query de indicadores de categoría
+        const cleanQuery = queryLower.replace(/\s*\(categoría\)$/, '');
+        
+        // Buscar coincidencias exactas primero
+        for (const category of this.config.categories) {
+            for (const site of category.sites) {
+                if (site.name.toLowerCase() === cleanQuery) {
+                    return site;
+                }
+            }
+        }
+        
+        // Buscar coincidencias parciales
+        for (const category of this.config.categories) {
+            for (const site of category.sites) {
+                if (site.name.toLowerCase().includes(cleanQuery)) {
+                    return site;
+                }
+            }
+        }
+        
+        return null;
     }
 
     initLinkCards() {
@@ -449,6 +517,26 @@ const additionalStyles = `
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         transition: all 0.2s ease;
         font-size: 13px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+    
+    .suggestion-text {
+        font-weight: 500;
+    }
+    
+    .site-url {
+        font-size: 11px;
+        color: rgba(0, 212, 255, 0.7);
+        font-family: monospace;
+    }
+    
+    .autocomplete-item.loading {
+        color: rgba(255, 255, 255, 0.6);
+        font-style: italic;
+        text-align: center;
+        cursor: default;
     }
     
     .autocomplete-item:last-child {
